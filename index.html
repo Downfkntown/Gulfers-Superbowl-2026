@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gulfers Super Bowl Pick 'Em 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto Condensed', sans-serif;
+      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+      min-height: 100vh;
+      color: white;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .header h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      margin-bottom: 10px;
+    }
+
+    .header h1 .gold {
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ef4444 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header h1 .blue {
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header .subtitle {
+      color: #6b7280;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: rgba(31, 41, 55, 0.5);
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 15px 25px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-box .label {
+      color: #9ca3af;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-box .value {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .stat-box .value.green { color: #22c55e; }
+    .stat-box .value.seahawks { color: #69BE28; }
+
+    /* Bracket */
+    .bracket {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .conference {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .conference-header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .conference-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
+
+    .afc .conference-badge {
+      background: rgba(185, 28, 28, 0.2);
+      border: 2px solid #991b1b;
+      color: #ef4444;
+    }
+
+    .nfc .conference-badge {
+      background: rgba(30, 64, 175, 0.2);
+      border: 2px solid #1e40af;
+      color: #3b82f6;
+    }
+
+    .round-label {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .round-label span {
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      color: black;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .matchup {
+      background: rgba(17, 24, 39, 0.6);
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .matchup::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #f59e0b, #f97316, #ef4444);
+    }
+
+    .vs {
+      text-align: center;
+      color: #4b5563;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 10px 0;
+    }
+
+    /* Team Card */
+    .team-card {
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .team-card.eliminated {
+      opacity: 0.4;
+      filter: grayscale(100%);
+    }
+
+    .team-card .seed {
+      display: inline-block;
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .team-card .team-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: inline;
+    }
+
+    .team-card .picks-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-top: 10px;
+      margin-right: 8px;
+    }
+
+    .team-card .hot-badge {
+      color: #fcd34d;
+      font-size: 0.7rem;
+      font-weight: 700;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .gulfers-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .gulfer {
+      background: rgba(0,0,0,0.4);
+      color: rgba(255,255,255,0.9);
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    /* Team Colors */
+    .broncos { background: linear-gradient(135deg, #FB4F14 0%, #002244 100%); }
+    .bills { background: linear-gradient(135deg, #00338D 0%, #C60C30 100%); }
+    .patriots { background: linear-gradient(135deg, #002244 0%, #C60C30 100%); }
+    .texans { background: linear-gradient(135deg, #03202F 0%, #A71930 100%); }
+    .seahawks { background: linear-gradient(135deg, #002244 0%, #69BE28 100%); }
+    .niners { background: linear-gradient(135deg, #AA0000 0%, #B3995D 100%); }
+    .bears { background: linear-gradient(135deg, #0B162A 0%, #C83803 100%); }
+    .rams { background: linear-gradient(135deg, #003594 0%, #FFA300 100%); }
+
+    /* Super Bowl Center */
+    .super-bowl {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .super-bowl-badge {
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ef4444 100%);
+      color: black;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 10px 40px rgba(245, 158, 11, 0.3);
+      margin-bottom: 20px;
+    }
+
+    .super-bowl-trophy {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .champion-slot {
+      background: rgba(234, 179, 8, 0.1);
+      border: 2px dashed #ca8a04;
+      border-radius: 16px;
+      padding: 30px 50px;
+      text-align: center;
+    }
+
+    .champion-slot .label {
+      color: #ca8a04;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 1px solid #1f2937;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #6b7280;
+      font-size: 0.8rem;
+    }
+
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+    }
+
+    .legend-dot.active { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .legend-dot.eliminated { background: #4b5563; opacity: 0.4; }
+    .legend-dot.champion { background: #f59e0b; box-shadow: 0 0 0 2px #fcd34d; }
+
+    .credits {
+      color: #374151;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .bracket {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      
+      .super-bowl {
+        order: -1;
+      }
+      
+      .header h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>
+        <span class="gold">GULFERS</span> SUPER BOWL <span class="blue">PICK 'EM</span>
+      </h1>
+      <p class="subtitle">Road to Super Bowl LX • February 8, 2026</p>
+      
+      <div class="stats-bar">
+        <div class="stat-box">
+          <div class="label">Total Picks</div>
+          <div class="value">34</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Prize Per Winner</div>
+          <div class="value green">$50</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Most Popular</div>
+          <div class="value seahawks">Seahawks (14)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bracket -->
+    <div class="bracket">
+      <!-- AFC -->
+      <div class="conference afc">
+        <div class="conference-header">
+          <span class="conference-badge">AFC</span>
+        </div>
+        
+        <div class="round-label"><span>Divisional Round</span></div>
+        
+        <!-- Matchup 1: Broncos vs Bills -->
+        <div class="matchup">
+          <div class="team-card broncos">
+            <span class="seed">#1</span>
+            <span class="team-name">Broncos</span>
+            <div>
+              <span class="picks-badge">2 PICKS</span>
+            </div>
+            <div class="gulfers-list">
+              <span class="gulfer">Delissa D</span>
+              <span class="gulfer">Stacey M</span>
+            </div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team-card bills">
+            <span class="seed">#6</span>
+            <span class="team-name">Bills</span>
+            <div>
+              <span class="picks-badge">3 PICKS</span>
+            </div>
+            <div class="gulfers-list">
+              <span class="gulfer">Jeri M</span>
+              <span class="gulfer">Dat V</span>
+              <span class="gulfer">Oanh H</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Matchup 2: Patriots vs Texans -->
+        <div class="matchup">
+          <div class="team-card patriots">
+            <span class="seed">#2</span>
+            <span class="team-name">Patriots</span>
+            <div>
+              <span class="picks-badge">1 PICK</span>
+            </div>
+            <div class="gulfers-list">
+              <span class="gulfer">Tim O</span>
+            </div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team-card texans">
+            <span class="seed">#5</span>
+            <span class="team-name">Texans</span>
+            <div>
+              <span class="picks-badge">7 PICKS</span>
+              <span class="hot-badge">🔥 HOT</span>
+            </div>
+            <div class="gulfers-list">
+              <span class="gulfer">Marty H</span>
+              <span class="gulfer">Kris B</span>
+              <span class="gulfer">Judy M</span>
+              <span class="gulfer">Barry B</span>
+              <span class="gulfer">Ed Z</span>
+              <span class="gulfer">Mike R</span>
+              <span class="gulfer">Michelle L</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Super Bowl Center -->
+      <div class="super-bowl">
+        <span class="super-bowl-badge">🏆 Super Bowl LX</span>
+        <div class="super-bowl-trophy">🏆</div>
+        <div class="champion-slot">
+          <div class="label">Champion TBD</div>
+        </div>
+      </div>
+
+      <!-- NFC -->
+      <div class="conference nfc">
+        <div class="conference-header">
+          <span class="conference-badge">NFC</span>
+        </div>
+        
+        <div class="round-label"><span>Divisional Round</span></div>
+        
+        <!-- Matchup 1: Seahawks vs 49ers -->
+        <div class="matchup">
+          <div class="team-card seahawks">
+            <span class="seed">#1</span>
+            <span class="team-name">Seahawks</span>
+            <div>
+              <span class="picks-badge">14 PICKS</span>
+              <span class="hot-badge">🔥🔥🔥 FAVORITE</span>
+            </div>
+            <div class="gulfers-list">
+              <span class="gulfer">Colin F</span>
+              <span class="gulfer">Alexandra E</span>
+              <span class="gulfer">Bryan M</span>
+              <span class="gulfer">Kenil S</span>
+              <span class="gulfer">Brent C</span>
+              <span class="gulfer">Cynthia B</span>
+              <span class="gulfer">Paul F</span>
+              <span class="gulfer">Tom B</span>
+              <span class="gulfer">John T</span>
+              <span class="gulfer">Brian B</span>
+              <span class="gulfer">Liz A</span>
+              <span class="gulfer">Ruthanne S</span>
+              <span class="gulfer">Chris B</span>
+              <span class="gulfer">Sophy B</span>
+            </div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team-card niners">
+            <span class="seed">#6</span>
+            <span class="team-name">49ers</span>
+            <div>
+              <span class="picks-badge">2 PICKS</span>
+            </div>
+            <div class="gulfers-list">
+              <span class="gulfer">Jennifer C</span>
+              <span class="gulfer">Melanie M</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Matchup 2: Bears vs Rams -->
+        <div class="matchup">
+          <div class="team-card bears">
+            <span class="seed">#2</span>
+            <span class="team-name">Bears</span>
+            <div>
+              <span class="picks-badge">3 PICKS</span>
+            </div>
+            <div class="gulfers-list">
+              <span class="gulfer">Sam M</span>
+              <span class="gulfer">Sharon R</span>
+              <span class="gulfer">Jim R</span>
+            </div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team-card rams">
+            <span class="seed">#5</span>
+            <span class="team-name">Rams</span>
+            <div>
+              <span class="picks-badge">2 PICKS</span>
+            </div>
+            <div class="gulfers-list">
+              <span class="gulfer">Jarod M</span>
+              <span class="gulfer">Austin S</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot active"></div>
+          <span>Active</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot eliminated"></div>
+          <span>Eliminated</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot champion"></div>
+          <span>Champion</span>
+        </div>
+        <div class="legend-item">
+          <span>🔥</span>
+          <span>5+ picks</span>
+        </div>
+      </div>
+      <p class="credits">DELTEK GULFERS WELL LIVING GROUP • 2026 PLAYOFF CHALLENGE</p>
+    </div>
+  </div>
+</body>
+</html>
