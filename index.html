@@ -3,24 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gulfers Super Bowl Pick 'Em 2026</title>
+  <title>Gulfers Super Bowl Pick 'Em 2026 - CHAMPIONS</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark: #0d1117;
       --bg-card: #161b22;
-      --bg-card-hover: #1c2128;
       --border: #30363d;
       --text-primary: #f0f6fc;
       --text-secondary: #8b949e;
       --text-muted: #484f58;
       --gold: #ffd700;
       --gold-dark: #b8860b;
+      --champion-glow: rgba(105, 190, 40, 0.4);
       --patriots-primary: #002244;
       --patriots-secondary: #c60c30;
       --seahawks-primary: #002244;
       --seahawks-secondary: #69be28;
-      --eliminated: #30363d;
     }
 
     * {
@@ -35,18 +34,66 @@
       color: var(--text-primary);
       min-height: 100vh;
       line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Confetti Animation */
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      top: -20px;
+      animation: confetti-fall 4s ease-out infinite;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
     }
 
     .container {
       max-width: 1000px;
       margin: 0 auto;
       padding: 30px 20px;
+      position: relative;
+      z-index: 1;
     }
 
     /* Header */
     .header {
       text-align: center;
       margin-bottom: 30px;
+    }
+
+    .champion-banner {
+      background: linear-gradient(135deg, var(--seahawks-primary) 0%, var(--seahawks-secondary) 100%);
+      padding: 15px 30px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-bottom: 15px;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px var(--champion-glow); }
+      50% { box-shadow: 0 0 40px var(--champion-glow), 0 0 60px var(--champion-glow); }
+    }
+
+    .champion-banner h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
     }
 
     .header h1 {
@@ -89,9 +136,9 @@
       line-height: 1;
     }
 
-    .stat-value.alive { color: #3fb950; }
-    .stat-value.eliminated { color: #f85149; }
+    .stat-value.winners { color: #69be28; }
     .stat-value.prize { color: var(--gold); }
+    .stat-value.total { color: #3fb950; }
 
     .stat-label {
       font-size: 0.7rem;
@@ -101,168 +148,150 @@
       margin-top: 2px;
     }
 
-    /* Super Bowl Hero Section */
-    .super-bowl-hero {
-      background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0) 50%, rgba(255,215,0,0.1) 100%);
-      border: 2px solid var(--gold-dark);
-      border-radius: 16px;
-      padding: 25px;
+    /* Champions Section */
+    .champions-section {
+      background: linear-gradient(135deg, rgba(105, 190, 40, 0.15) 0%, rgba(0, 34, 68, 0.3) 100%);
+      border: 3px solid var(--seahawks-secondary);
+      border-radius: 20px;
+      padding: 30px;
       margin-bottom: 30px;
       position: relative;
       overflow: hidden;
     }
 
-    .super-bowl-hero::before {
+    .champions-section::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--patriots-secondary), var(--gold), var(--seahawks-secondary));
+      height: 5px;
+      background: linear-gradient(90deg, var(--gold), var(--seahawks-secondary), var(--gold));
     }
 
-    .sb-header {
+    .trophy-display {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
-    .sb-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-      color: #000;
+    .trophy-icon {
+      font-size: 5rem;
+      animation: trophy-bounce 1s ease-in-out infinite;
+    }
+
+    @keyframes trophy-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .champion-team {
       font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, var(--seahawks-secondary) 0%, #fff 50%, var(--seahawks-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 10px 0;
+    }
+
+    .champion-subtitle {
+      color: var(--gold);
       font-size: 1.1rem;
-      padding: 8px 25px;
-      border-radius: 25px;
       letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
-    .sb-date {
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-      margin-top: 8px;
-      letter-spacing: 1px;
+    /* Winners Grid */
+    .winners-section {
+      margin-top: 30px;
     }
 
-    /* Matchup Display */
-    .sb-matchup {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 20px;
+    .winners-header {
+      text-align: center;
       margin-bottom: 20px;
     }
 
-    .sb-team {
-      text-align: center;
-      padding: 15px;
-      border-radius: 12px;
-      transition: transform 0.2s;
-    }
-
-    .sb-team:hover {
-      transform: scale(1.02);
-    }
-
-    .sb-team.patriots {
-      background: linear-gradient(135deg, var(--patriots-primary) 0%, var(--patriots-secondary) 100%);
-    }
-
-    .sb-team.seahawks {
-      background: linear-gradient(135deg, var(--seahawks-primary) 0%, var(--seahawks-secondary) 100%);
-    }
-
-    .sb-team-conf {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      opacity: 0.8;
-      margin-bottom: 5px;
-    }
-
-    .sb-team-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem;
-      letter-spacing: 1px;
-    }
-
-    .sb-team-picks {
-      font-size: 0.75rem;
-      opacity: 0.9;
-      margin-top: 5px;
-    }
-
-    .sb-vs {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .sb-vs-text {
+    .winners-header h3 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1.5rem;
       color: var(--gold);
+      letter-spacing: 2px;
     }
 
-    .sb-trophy {
-      font-size: 2.5rem;
+    .winners-header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .winners-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .winner-card {
+      background: linear-gradient(135deg, var(--seahawks-primary) 0%, var(--seahawks-secondary) 100%);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .winner-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(105, 190, 40, 0.3);
+    }
+
+    .winner-icon {
+      font-size: 1.5rem;
       margin-bottom: 5px;
     }
 
-    /* Gulfers Lists */
-    .sb-gulfers {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
+    .winner-name {
+      font-weight: 700;
+      font-size: 1rem;
     }
 
-    .gulfer-group {
-      background: rgba(0,0,0,0.3);
-      border-radius: 10px;
-      padding: 12px;
+    .winner-prize {
+      font-size: 0.8rem;
+      color: var(--gold);
+      margin-top: 5px;
+      font-weight: 600;
     }
 
-    .gulfer-group-header {
+    /* Lone Wolf Section */
+    .lone-wolf-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .lone-wolf-header {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      gap: 10px;
       margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
     }
 
-    .gulfer-group-icon {
-      font-size: 1.1rem;
+    .lone-wolf-header h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      color: var(--text-secondary);
     }
 
-    .gulfer-group-title {
-      font-size: 0.75rem;
+    .lone-wolf-message {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .lone-wolf-name {
+      color: var(--patriots-secondary);
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .gulfer-group.patriots .gulfer-group-title { color: var(--patriots-secondary); }
-    .gulfer-group.seahawks .gulfer-group-title { color: var(--seahawks-secondary); }
-
-    .gulfer-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .gulfer-tag {
-      background: rgba(255,255,255,0.1);
-      color: var(--text-primary);
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 15px;
-    }
-
-    .gulfer-tag.lone-wolf {
-      background: linear-gradient(135deg, var(--patriots-primary), var(--patriots-secondary));
-      font-weight: 600;
     }
 
     /* Eliminated Section */
@@ -309,7 +338,7 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 12px;
-      opacity: 0.6;
+      opacity: 0.5;
     }
 
     .eliminated-team-header {
@@ -360,108 +389,173 @@
     /* Responsive */
     @media (max-width: 700px) {
       .header h1 { font-size: 2rem; }
+      .champion-team { font-size: 2.5rem; }
       .stats-row { gap: 20px; flex-wrap: wrap; }
-      .sb-matchup { grid-template-columns: 1fr; gap: 15px; }
-      .sb-vs { order: -1; flex-direction: row; gap: 10px; }
-      .sb-gulfers { grid-template-columns: 1fr; }
+      .winners-grid { grid-template-columns: repeat(2, 1fr); }
       .eliminated-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+  <!-- Confetti -->
+  <div class="confetti">
+    <div class="confetti-piece" style="left: 5%; background: #69be28; animation-delay: 0s;"></div>
+    <div class="confetti-piece" style="left: 15%; background: #ffd700; animation-delay: 0.5s;"></div>
+    <div class="confetti-piece" style="left: 25%; background: #69be28; animation-delay: 1s;"></div>
+    <div class="confetti-piece" style="left: 35%; background: #fff; animation-delay: 0.3s;"></div>
+    <div class="confetti-piece" style="left: 45%; background: #69be28; animation-delay: 0.8s;"></div>
+    <div class="confetti-piece" style="left: 55%; background: #ffd700; animation-delay: 0.2s;"></div>
+    <div class="confetti-piece" style="left: 65%; background: #69be28; animation-delay: 1.2s;"></div>
+    <div class="confetti-piece" style="left: 75%; background: #fff; animation-delay: 0.6s;"></div>
+    <div class="confetti-piece" style="left: 85%; background: #69be28; animation-delay: 0.4s;"></div>
+    <div class="confetti-piece" style="left: 95%; background: #ffd700; animation-delay: 0.9s;"></div>
+  </div>
+
   <div class="container">
     <!-- Header -->
     <header class="header">
-      <h1>🏆 GULFERS SUPER BOWL PICK 'EM</h1>
-      <p class="subtitle">Super Bowl LX • February 8, 2026</p>
+      <div class="champion-banner">
+        <h2>🏆 SUPER BOWL LX CHAMPIONS 🏆</h2>
+      </div>
+      <h1>GULFERS SUPER BOWL PICK 'EM</h1>
+      <p class="subtitle">Final Results • February 8, 2026</p>
     </header>
 
     <!-- Stats -->
     <div class="stats-row">
       <div class="stat">
-        <div class="stat-value alive">15</div>
-        <div class="stat-label">Still Alive</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value eliminated">19</div>
-        <div class="stat-label">Eliminated</div>
+        <div class="stat-value winners">14</div>
+        <div class="stat-label">Winners</div>
       </div>
       <div class="stat">
         <div class="stat-value prize">$50</div>
-        <div class="stat-label">Prize Per Winner</div>
+        <div class="stat-label">Each</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value total">$700</div>
+        <div class="stat-label">Total Payout</div>
       </div>
     </div>
 
-    <!-- Super Bowl Hero -->
-    <section class="super-bowl-hero">
-      <div class="sb-header">
-        <span class="sb-badge">🏆 SUPER BOWL LX 🏆</span>
-        <p class="sb-date">Sunday, February 8, 2026 • Santa Clara, CA</p>
+    <!-- Champions Section -->
+    <section class="champions-section">
+      <div class="trophy-display">
+        <div class="trophy-icon">🏆</div>
+        <div class="champion-team">SEAHAWKS</div>
+        <div class="champion-subtitle">Super Bowl LX Champions</div>
       </div>
 
-      <div class="sb-matchup">
-        <div class="sb-team patriots">
-          <div class="sb-team-conf">AFC Champion</div>
-          <div class="sb-team-name">PATRIOTS</div>
-          <div class="sb-team-picks">1 Pick • 🐺 Lone Wolf</div>
+      <div class="winners-section">
+        <div class="winners-header">
+          <h3>🎉 YOUR 2026 GULFERS CHAMPIONS 🎉</h3>
+          <p>14 Winners • $50 Each</p>
         </div>
 
-        <div class="sb-vs">
-          <div class="sb-trophy">🏆</div>
-          <div class="sb-vs-text">VS</div>
-        </div>
-
-        <div class="sb-team seahawks">
-          <div class="sb-team-conf">NFC Champion</div>
-          <div class="sb-team-name">SEAHAWKS</div>
-          <div class="sb-team-picks">14 Picks • 🔥 Favorite</div>
-        </div>
-      </div>
-
-      <div class="sb-gulfers">
-        <div class="gulfer-group patriots">
-          <div class="gulfer-group-header">
-            <span class="gulfer-group-icon">🐺</span>
-            <span class="gulfer-group-title">Patriots (1)</span>
+        <div class="winners-grid">
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Colin F</div>
+            <div class="winner-prize">+$50</div>
           </div>
-          <div class="gulfer-tags">
-            <span class="gulfer-tag lone-wolf">Tim O</span>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Alexandra E</div>
+            <div class="winner-prize">+$50</div>
           </div>
-        </div>
-
-        <div class="gulfer-group seahawks">
-          <div class="gulfer-group-header">
-            <span class="gulfer-group-icon">🦅</span>
-            <span class="gulfer-group-title">Seahawks (14)</span>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Bryan M</div>
+            <div class="winner-prize">+$50</div>
           </div>
-          <div class="gulfer-tags">
-            <span class="gulfer-tag">Colin F</span>
-            <span class="gulfer-tag">Alexandra E</span>
-            <span class="gulfer-tag">Bryan M</span>
-            <span class="gulfer-tag">Kenil S</span>
-            <span class="gulfer-tag">Brent C</span>
-            <span class="gulfer-tag">Cynthia B</span>
-            <span class="gulfer-tag">Paul F</span>
-            <span class="gulfer-tag">Tom B</span>
-            <span class="gulfer-tag">John T</span>
-            <span class="gulfer-tag">Brian B</span>
-            <span class="gulfer-tag">Liz A</span>
-            <span class="gulfer-tag">Ruthanne S</span>
-            <span class="gulfer-tag">Chris B</span>
-            <span class="gulfer-tag">Sophy B</span>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Kenil S</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Brent C</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Cynthia B</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Paul F</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Tom B</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">John T</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Brian B</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Liz A</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Ruthanne S</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Chris B</div>
+            <div class="winner-prize">+$50</div>
+          </div>
+          <div class="winner-card">
+            <div class="winner-icon">🏆</div>
+            <div class="winner-name">Sophy B</div>
+            <div class="winner-prize">+$50</div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Lone Wolf Recognition -->
+    <section class="lone-wolf-section">
+      <div class="lone-wolf-header">
+        <span>🐺</span>
+        <h3>Salute to the Lone Wolf</h3>
+      </div>
+      <p class="lone-wolf-message">
+        <span class="lone-wolf-name">Tim O</span> stood alone with the Patriots against 14 Seahawks believers. 
+        The wolf howled, but Seattle's army was too strong. Respect for riding solo! 🫡
+      </p>
+    </section>
+
     <!-- Eliminated Section -->
     <section class="eliminated-section">
       <div class="eliminated-header">
-        <h2>💀 ELIMINATED</h2>
-        <span class="eliminated-count">19 Gulfers</span>
+        <h2>💀 FINAL STANDINGS - ELIMINATED</h2>
+        <span class="eliminated-count">20 Gulfers</span>
       </div>
 
       <div class="eliminated-grid">
+        <div class="eliminated-team">
+          <div class="eliminated-team-header">
+            <span class="eliminated-team-name">Patriots</span>
+            <span class="eliminated-team-round">Super Bowl</span>
+          </div>
+          <div class="eliminated-gulfers">
+            <span class="eliminated-gulfer">Tim O 🐺</span>
+          </div>
+        </div>
+
         <div class="eliminated-team">
           <div class="eliminated-team-header">
             <span class="eliminated-team-name">Broncos</span>
@@ -539,7 +633,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      DELTEK GULFERS WELL LIVING GROUP • 2026 SUPER BOWL CHALLENGE
+      DELTEK GULFERS WELL LIVING GROUP • 2026 SUPER BOWL CHALLENGE • THANKS FOR PLAYING! 🏈
     </footer>
   </div>
 </body>
